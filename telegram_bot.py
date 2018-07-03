@@ -1,27 +1,19 @@
 import time
-import random
-import datetime
+import sqlite3
+
 import telepot
 from telepot.loop import MessageLoop
-from dbconnect import DBHelper
-import sqlite3
-"""
-After **inserting token** in the source code, run it:
-```
-$ python2.7 diceyclock.py
-```
-[Here is a tutorial](http://www.instructables.com/id/Set-up-Telegram-Bot-on-Raspberry-Pi/)
-teaching you how to setup a bot on Raspberry Pi. This simple bot does nothing
-but accepts two commands:
-- `/roll` - reply with a random integer between 1 and 6, like rolling a dice.
-- `/time` - reply with the current time, like a clock.
-"""
+import praw
 
-bot = telepot.Bot('575789532:AAFQ569xvZzwtqCogSBU8-4ZL0DvlveddVA')
+from configs import bot
+from dbconnect import DBHelper
+from reddit_deamon import main_deamon
+
+
 def handle(msg):
     chat_id = msg['chat']['id']
     command = msg['text']
-    with sqlite3.connect("todo.sqlite") as con:
+    with sqlite3.connect("todo.sqlite"):
         db = DBHelper()
         print('Got command: %s' % command)
         if command:
@@ -30,6 +22,7 @@ def handle(msg):
                 print("Old one")
             else:
                 db.add_item(str(chat_id))
+                main_deamon(user_id=chat_id)
                 print("new one")
 
 

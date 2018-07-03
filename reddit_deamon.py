@@ -2,7 +2,6 @@ import sqlite3
 
 import praw
 import configs
-from telegram_bot import bot
 from dbconnect import DBHelper
 
 
@@ -49,19 +48,22 @@ def main_deamon(user_id = None):
         db = DBHelper()
         for submission_id in subreddit.stream.submissions():
             try:
-                # i += 1
-                print(30*'_{}_'.format(i))
+                i += 1
+                print('Post number_{}_'.format(i))
                 submission = reddit.submission(id=submission_id)
                 if submission.ups >= configs.MIN_UPVOTES and url_analyzer.is_ref_link(submission.url):
                     new_url = url_analyzer.ref_code_replace(submission.url)
+                    if user_id:
+                        configs.bot.sendMessage(user_id,"{}\n{}".format(submission.title, new_url))
                     for user in db.get_items():
-                        bot.sendMessage(user, "{}\n{}".format(submission.title, new_url))
-                if i == 21:
+                        configs.bot.sendMessage(user, "{}\n{}".format(submission.title, new_url))
+                if user_id and i == 30:
                     return
                 else:
                     continue
             except praw.exceptions.PRAWException as e:
                 pass
+
 
 if __name__ == '__main__':
     main_deamon()
