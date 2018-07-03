@@ -55,8 +55,9 @@ def main_deamon(user_id = None):
                     new_url = url_analyzer.ref_code_replace(submission.url)
                     if user_id:
                         configs.bot.sendMessage(user_id,"{}\n{}".format(submission.title, new_url))
-                    for user in db.get_items():
-                        configs.bot.sendMessage(user, "{}\n{}".format(submission.title, new_url))
+                    else:
+                        for user in db.get_items():
+                            configs.bot.sendMessage(user, "{}\n{}".format(submission.title, new_url))
                 if user_id and i == 100:
                     return
                 else:
