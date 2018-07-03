@@ -57,7 +57,7 @@ def main_deamon(user_id = None):
                         configs.bot.sendMessage(user_id,"{}\n{}".format(submission.title, new_url))
                     for user in db.get_items():
                         configs.bot.sendMessage(user, "{}\n{}".format(submission.title, new_url))
-                if user_id and i == 30:
+                if user_id and i == 100:
                     return
                 else:
                     continue
